@@ -1,10 +1,5 @@
 # Credits: Paul Czarkowski /paulczar/docker-mysql repo paul@paulcz.net
-
-FROM ubuntu
-MAINTAINER Tegan Snyder "tsnyder@tegdesign.com"
-
-RUN apt-get update
-RUN apt-get -y install mysql-server
+FROM mysql:5.7
 
 ADD mysql-listen.cnf /etc/mysql/conf.d/mysql-listen.cnf
 

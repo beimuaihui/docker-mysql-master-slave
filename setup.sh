@@ -7,15 +7,19 @@ echo "-----------------"
 
 echo "* Create MySQL01"
 
-MYSQL01=$(docker run  -v /my/custom:/etc/mysql/conf.d -e MYSQL_ROOT_PASSWORD=root -d mysql:5.7  --server-id=1 --log-bin=mysql-bin --log-slave-updates=1)
+mkdir -p /var/www/software/mysql/conf
+mkdir -p /var/www/software/mysql/files
+cp ./mysql-listen.cnf /var/www/software/mysql/conf
+
+MYSQL01=$(docker run -v /var/www/software/mysql/files:/var/lib/mysql-files -v /var/www/software/mysql/conf:/etc/mysql/conf.d -e MYSQL_ROOT_PASSWORD=root -d mysql:5.7  --server-id=1 --log-bin=mysql-bin --log-slave-updates=1)
 MYSQL01_IP=$(docker inspect -f "{{.NetworkSettings.IPAddress}}" $MYSQL01)
 
 echo "* Create MySQL02"
 
-MYSQL02=$(docker run  -v /my/custom:/etc/mysql/conf.d -e MYSQL_ROOT_PASSWORD=root -d mysql:5.7 --server-id=2 --log-bin=mysql-bin --log-slave-updates=1 --auto_increment_increment=2 --auto_increment_offset=2)
+MYSQL02=$(docker run  -v /var/www/software/mysql/files:/var/lib/mysql-files -v /var/www/software/mysql/conf:/etc/mysql/conf.d -e MYSQL_ROOT_PASSWORD=root -d mysql:5.7 --server-id=2 --log-bin=mysql-bin --log-slave-updates=1 --auto_increment_increment=2 --auto_increment_offset=2)
 MYSQL02_IP=$(docker inspect -f "{{.NetworkSettings.IPAddress}}" $MYSQL02)
 
-echo "* Sleep for two seconds for servers to come online..."
+echo "* Sleep for two hundred seconds for servers to come online..."
 sleep 200
 
 echo "* Creat replication user"
